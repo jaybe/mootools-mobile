@@ -45,21 +45,20 @@ var events = {
 		
 		var touch = event.changedTouches[0];
 		var end = {x: touch.pageX, y: touch.pageY};
-		if (this.retrieve(cancelKey) && Math.abs(start.y - end.y) > Math.abs(start.x - end.x)){
-			active = false;
+
+		var distance = this.retrieve(distanceKey, dflt);
+		var diffx = end.x - start.x;
+		var diffy = end.y - start.y;
+
+		if(Math.abs(diffx) > Math.abs(diffy) && Math.abs(diffx) > distance ) {
+			event.direction = (diffx < -distance ? 'left' : 'right');
+		} else if( Math.abs(diffy) > distance ) {
+			event.direction = (diffy < -distance ? 'up' : 'down');
+		} else {
 			return;
 		}
 		
-		var distance = this.retrieve(distanceKey, dflt),
-			diff = end.x - start.x,
-			isLeftSwipe = diff < -distance,
-			isRightSwipe = diff > distance;
-
-		if (!isRightSwipe && !isLeftSwipe)
-			return;
-		
 		active = false;
-		event.direction = (isLeftSwipe ? 'left' : 'right');
 		event.start = start;
 		event.end = end;
 		
